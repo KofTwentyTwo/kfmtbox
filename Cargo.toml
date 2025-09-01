@@ -1,0 +1,96 @@
+[package]
+name = "kfmtbox"
+version = "0.1.0"
+edition = "2021"
+authors = ["James Maes <james.maes@example.com>"]
+description = "A Rust-based command-line utility that wraps text in flower box style comments"
+license = "MIT"
+repository = "https://github.com/koftwentytwo/kfmtbox"
+homepage = "https://github.com/koftwentytwo/kfmtbox"
+documentation = "https://docs.rs/kfmtbox"
+readme = "README.md"
+keywords = ["cli", "formatting", "comments", "text-processing", "code-formatter"]
+categories = ["command-line-utilities", "text-processing", "development-tools::build-utils"]
+
+[dependencies]
+clap = { version = "4.4", features = ["derive"] }
+serde = { version = "1.0", features = ["derive"] }
+serde_yaml = "0.9"
+dirs = "6.0.0"
+
+[[bin]]
+name = "kfmtbox"
+path = "src/main.rs"
+
+[dev-dependencies]
+
+# Linting configuration
+[lints.clippy]
+# Based on your .clang-tidy preferences
+# Be strict about code quality and style
+all = { level = "warn", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+nursery = { level = "warn", priority = -1 }
+cargo = { level = "warn", priority = -1 }
+
+# Disable some lints that might be too noisy
+# (equivalent to disabling some checks in clang-tidy)
+missing-docs-in-private-items = "allow"
+module-name-repetitions = "allow"
+
+# Keep explicit return statements (disable needless-return warnings)
+needless-return = "allow"
+redundant-else = "allow"
+question-mark-used = "allow"
+
+# Enable strict style checks (similar to readability-braces-around-statements)
+needless-lifetimes = "warn"
+redundant-closure = "warn"
+unnecessary-lazy-evaluations = "warn"
+
+# Performance and safety checks
+unwrap-used = "warn"
+expect-used = "warn"
+panic = "warn"
+unreachable = "warn"
+
+# Complexity checks (similar to your C++ style preferences)
+too-many-arguments = "warn"
+too-many-lines = "warn"
+cognitive-complexity = "warn"
+
+# Type safety checks
+cast-precision-loss = "warn"
+cast-possible-truncation = "warn"
+float-arithmetic = "warn"
+
+# Memory and performance checks
+large-enum-variant = "warn"
+large-stack-arrays = "warn"
+
+# String and collection checks
+string-slice = "warn"
+collection-is-never-read = "warn"
+indexing-slicing = "warn"
+
+# Async and concurrency checks
+async-yields-async = "warn"
+await-holding-lock = "warn"
+
+# Documentation and naming
+doc-markdown = "warn"
+
+# Error handling
+result-large-err = "warn"
+missing-errors-doc = "warn"
+
+# Macro usage
+redundant-pattern-matching = "warn"
+
+# Integer arithmetic
+arithmetic-side-effects = "warn"
+integer-division = "warn"
+
+# Additional strict checks
+implicit-return = "warn"
+single-match-else = "warn"

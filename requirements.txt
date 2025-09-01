@@ -1,0 +1,66 @@
+Project Name: kfmtbox
+Purpose: A Rust-based command-line utility that wraps one or more lines of text in a “flower box” style comment, using the appropriate comment style for the file type.
+
+⸻
+
+Overview:
+
+Create a CLI tool (kfmtbox) that:
+	•	Detects the file type from extension or CLI argument
+	•	Applies a “flower box” style comment block using the correct line comment syntax
+	•	Reads from stdin, outputs to stdout
+	•	Replaces existing flower box comments if already present
+	•	Ensures consistent formatting in monospace terminal environments
+	•	Is designed for use from text editors like neovim via hotkeys
+
+⸻
+
+Core Features:
+	1.	Input/Output:
+	•	Accepts input from stdin
+	•	Sends formatted result to stdout
+	2.	Comment Style Detection:
+	•	Uses --filename or --filetype CLI flag
+	•	Matches file extension to a known set of comment styles
+	•	Falls back to a default style (#) if unknown
+	3.	Comment Style Mapping:
+	•	Hardcoded map of common file extensions and their line comment styles
+	•	Supports user-defined YAML config at ~/.config/kfmtbox/comments.yaml
+	4.	Line Formatting Rules:
+	•	Max line length of 120 characters
+	•	If the input line(s) exceed a certain length, wrap and rebalance them
+	•	Wrapped lines must be as evenly sized as possible
+	•	Flower box must always be a perfect rectangle
+	•	Center content with padding between borders
+	5.	Multiline Input:
+	•	Treat multiple selected lines as one input block
+	•	Format as a single, contiguous box
+	6.	Existing Comment Detection:
+	•	Detect if the input is already in a flower box
+	•	If so, extract content and reformat with updated layout
+	7.	Configuration:
+	•	Comment styles can be defined in a YAML config file
+	•	Config file contains mappings of filetypes to line comment prefixes
+	8.	CLI Parameters:
+	•	--filename or --filetype to specify source file context
+	•	May include future flags for --max-width, --theme, etc.
+	9.	Editor Integration:
+	•	Designed for invocation via mapped hotkey in Neovim
+	•	Minimal output dependencies (pure stdout)
+	10.	Development Notes:
+	•	Written in idiomatic Rust
+	•	Separated modules for CLI parsing, box rendering, and wrapping
+	•	CLI powered by clap
+	•	Optional YAML parsing via serde_yaml
+	11.	Testing and Usability:
+	•	Unit tests for core logic
+	•	Can be built as a binary and tested via piping from command line
+
+⸻
+
+Future Enhancements (Optional):
+	•	Block comment support
+	•	Theming and customizable border styles
+	•	VSCode/JetBrains plugin integrations
+	•	Auto-detection of filetype via stdin context
+	•	Support for configurable max width or padding

@@ -1,0 +1,32 @@
+# Clippy configuration file
+# This file should be in the project root
+
+# Allow explicit return statements
+# Note: needless-return is not a valid clippy.toml option
+# Instead, we use the Cargo.toml configuration
+
+# Other valid clippy.toml options:
+cognitive-complexity-threshold = 10
+too-many-arguments-threshold = 7
+too-many-lines-threshold = 100
+type-complexity-threshold = 200
+large-error-threshold = 128
+stack-size-threshold = 256
+enum-variant-size-threshold = 200
+array-size-threshold = 512
+max-fn-params-bools = 3
+max-struct-bools = 3
+max-trait-bounds = 3
+literal-representation-threshold = 10
+min-ident-chars-threshold = 3
+single-char-binding-names-threshold = 2
+missing-docs-in-crate-items = true
+check-private-items = true
+arithmetic-side-effects-allowed = []
+allow-unwrap-in-tests = false
+allow-expect-in-tests = false
+allow-panic-in-tests = false
+allow-dbg-in-tests = false
+allow-print-in-tests = false
+semicolon-inside-block-ignore-singleline = false
+semicolon-outside-block-ignore-multiline = false

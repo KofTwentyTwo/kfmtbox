@@ -1,0 +1,10 @@
+# RustRover project configuration
+[toolchain]
+channel = "nightly"
+components = ["rustfmt", "clippy"]
+
+[clippy]
+all-targets = true
+all-features = true
+warnings = ["clippy::all"]
+allow = ["clippy::needless_return", "clippy::redundant_else"]

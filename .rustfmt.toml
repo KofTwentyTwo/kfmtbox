@@ -1,0 +1,58 @@
+# Rustfmt configuration file
+# Based on your .clang-format preferences
+# Configured for nightly Rust with Allman brace style
+
+# Indentation - matches your IndentWidth: 3, TabWidth: 3, UseTab: Never
+tab_spaces = 3
+
+# Line length - matches your ColumnLimit: 100
+max_width = 100
+
+# Edition
+edition = "2021"
+
+# Brace style - matches your BreakBeforeBraces: Allman
+brace_style = "AlwaysNextLine"  # Opening braces on new lines
+control_brace_style = "AlwaysNextLine"  # Control structures with braces on new lines
+
+# Comments - matches your AlignTrailingComments: true
+wrap_comments = true
+comment_width = 100
+normalize_comments = false  # ReflowComments: false
+
+# Imports and modules
+imports_granularity = "Crate"
+imports_layout = "Mixed"
+group_imports = "StdExternalCrate"
+
+# Functions and expressions
+fn_single_line = false  # AllowShortFunctionsOnASingleLine: None
+where_single_line = false
+
+# Structs and enums
+struct_field_align_threshold = 0
+enum_discrim_align_threshold = 0
+
+# Spacing
+space_before_colon = false
+space_after_colon = true
+spaces_around_ranges = false
+
+# Trailing commas
+trailing_comma = "Vertical"
+
+# Empty lines
+empty_item_single_line = true
+# max_empty_lines_to_keep = 3  # Not available in current nightly
+
+# String formatting
+format_strings = true
+format_code_in_doc_comments = true
+
+# Misc
+remove_nested_parens = true
+use_try_shorthand = true
+use_field_init_shorthand = true
+force_explicit_abi = true
+
+# This configuration enforces your C++ Allman brace style in Rust

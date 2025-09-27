@@ -2,7 +2,7 @@
 name = "kfmtbox"
 version = "0.1.0"
 edition = "2021"
-authors = ["James Maes <james.maes@example.com>"]
+authors = ["James Maes <james@kof22.com>"]
 description = "A Rust-based command-line utility that wraps text in flower box style comments"
 license = "MIT"
 repository = "https://github.com/koftwentytwo/kfmtbox"

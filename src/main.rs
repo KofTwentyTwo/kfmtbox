@@ -2,6 +2,7 @@ use std::io::{self, Read};
 
 use clap::Parser;
 use kfmtbox::{BoxRenderer, Cli, CommentDetector, Config};
+use kfmtbox::verbose::{set_verbose, verbose_msg};
 
 /// Main entry point for the kfmtbox application.
 ///
@@ -18,10 +19,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>>
 {
    let cli = Cli::parse();
 
+   set_verbose(cli.verbose);
+
    // Load configuration
+   verbose_msg("Loading Config");
    let config = Config::load().unwrap_or_else(|_| Config::default());
 
    // Initialize comment detector
+   verbose_msg("Detecting Comment Type");
    let mut detector = CommentDetector::new();
    detector.load_config(&config);
 
@@ -40,23 +45,28 @@ fn main() -> Result<(), Box<dyn std::error::Error>>
    };
 
    // Read input from stdin
+   verbose_msg("Reading Comment from STDIN");
    let mut input = String::new();
    io::stdin().read_to_string(&mut input)?;
 
    // Remove trailing newline if present and normalize line endings
+   verbose_msg("Cleaning Comment (Removing Newlines and Returns");
    let input = input.trim_end();
    let input = input.replace("\r\n", "\n").replace("\n\r", "\n").replace("\r", "\n");
 
    if input.is_empty()
    {
+      verbose_msg("Input was empty - returning nothing successfully");
       return Ok(());
    }
 
    // Create box renderer and render the flower box
+   verbose_msg("Rendering comment in new flower box");
    let renderer = BoxRenderer::new(comment_style, cli.max_width);
    let result = renderer.render_flower_box(&input);
 
    // Output to stdout
+   verbose_msg("Outputting rendered comment");
    println!("{}", result);
 
    Ok(())

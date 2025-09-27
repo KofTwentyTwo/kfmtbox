@@ -17,4 +17,8 @@ pub struct Cli
    /// Maximum line width (default: 120)
    #[arg(short = 'w', long = "max-width", default_value = "120")]
    pub max_width: usize,
+
+   /// Verbose mode to show operations and decisions
+   #[arg(short = 'v', long = "verbose")]
+   pub verbose: bool,
 }

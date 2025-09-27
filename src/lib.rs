@@ -3,6 +3,7 @@ pub mod cli;
 pub mod comment_detector;
 pub mod config;
 pub mod text_wrapper;
+pub mod verbose;
 
 pub use box_renderer::BoxRenderer;
 pub use cli::Cli;

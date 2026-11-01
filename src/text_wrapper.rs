@@ -114,6 +114,6 @@ mod tests {
       let lines = vec!["Short".to_string(), "Very long line that exceeds".to_string(), "Another short".to_string()];
       let result = wrapper.balance_lines(lines);
 
-      assert!(!result.is_empty());
+      assert_eq!(result.len(), 3);
    }
 }

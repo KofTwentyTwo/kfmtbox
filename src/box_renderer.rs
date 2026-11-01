@@ -1,17 +1,13 @@
-
 use crate::{comment_detector::CommentStyle, text_wrapper::TextWrapper};
 
-pub struct BoxRenderer
-{
+pub struct BoxRenderer {
    comment_style: CommentStyle,
    text_wrapper: TextWrapper,
 }
 
-impl BoxRenderer
-{
+impl BoxRenderer {
    #[must_use]
-   pub fn new(comment_style: CommentStyle, max_width: usize) -> Self
-   {
+   pub const fn new(comment_style: CommentStyle, max_width: usize) -> Self {
       #[allow(clippy::needless_return)]
       return Self {
          comment_style,
@@ -20,8 +16,7 @@ impl BoxRenderer
    }
 
    #[must_use]
-   pub fn render_flower_box(&self, content: &str) -> String
-   {
+   pub fn render_flower_box(&self, content: &str) -> String {
       // Check if content is already in a flower box
       let clean_content = self.extract_content_from_box(content);
 
@@ -29,130 +24,82 @@ impl BoxRenderer
       let wrapped_lines = self.text_wrapper.wrap_text(&clean_content);
       let balanced_lines = self.text_wrapper.balance_lines(wrapped_lines);
 
-      // Find the maximum line length for box width
-      let max_line_len = balanced_lines
-         .iter()
-         .map(|line| line.len())
-         .max()
-         .unwrap_or(0);
+      // Find the widest line, in characters, for the box width
+      let max_line_len = balanced_lines.iter().map(|line| return line.chars().count()).max().unwrap_or(0);
 
-      let box_width = (max_line_len + 4).max(10); // Minimum width of 10
+      // Inner width: one space either side of the text, minimum of 10
+      let inner_width = max_line_len.saturating_add(2).max(10);
       let prefix = &self.comment_style.prefix;
+      let border = "─".repeat(inner_width);
 
       // Build the flower box
       let mut result = Vec::new();
 
       // Top border
-      result.push(format!(
-         "{prefix} {}",
-         "/".repeat(box_width)
-      ));
+      result.push(format!("{prefix} ╭{border}╮"));
 
       // Content lines
-      for line in balanced_lines
-      {
-         let padding = box_width - line.len() - 2;
-         let padded_line = format!(
-            "{prefix} {line}{} {prefix}",
-            " ".repeat(padding)
-         );
-         result.push(padded_line);
+      for line in balanced_lines {
+         let padding = inner_width.saturating_sub(line.chars().count()).saturating_sub(2);
+         result.push(format!("{prefix} │ {line}{} │", " ".repeat(padding)));
       }
 
       // Bottom border
-      result.push(format!(
-         "{prefix} {}",
-         "/".repeat(box_width)
-      ));
+      result.push(format!("{prefix} ╰{border}╯"));
 
-      result.join("\n")
+      return result.join("\n");
    }
 
-   /// Extracts content from an existing flower box comment.
-   ///
-   /// # Panics
-   ///
-   /// This function may panic if the input contains malformed flower box syntax
-   /// or if string slicing operations fail due to UTF-8 boundary issues.
-   fn extract_content_from_box(&self, content: &str) -> String
-   {
+   /// Extracts content from an existing flower box comment, or returns the input unchanged.
+   fn extract_content_from_box(&self, content: &str) -> String {
       let lines: Vec<&str> = content.lines().collect();
-      if lines.len() < 3
-      {
+      let (Some(first), Some(last)) = (lines.first(), lines.last()) else {
+         return content.to_string();
+      };
+      if lines.len() < 3 {
          return content.to_string();
       }
 
-      let prefix = &self.comment_style.prefix;
+      // Check if this looks like a flower box
+      let (first_line, last_line) = (first.trim(), last.trim());
+      if !(first_line.contains('╭') && first_line.contains('╮') && last_line.contains('╰') && last_line.contains('╯')) {
+         return content.to_string();
+      }
+
+      let prefix = self.comment_style.prefix.as_str();
       let mut content_lines = Vec::new();
 
-      // Check if this looks like a flower box
-      let first_line = lines[0].trim();
-      let last_line = lines[lines.len() - 1].trim();
+      // Extract content from the middle lines
+      for line in lines.iter().skip(1).take(lines.len().saturating_sub(2)) {
+         // Remove the comment prefix first
+         let clean_line = if line.trim_start().starts_with(prefix) {
+            line.split_once(prefix).map_or(*line, |(_, rest)| return rest)
+         } else {
+            line
+         };
 
-      if first_line.contains("╭")
-         && first_line.contains("╮")
-         && last_line.contains("╰")
-         && last_line.contains("╯")
-      {
-         // Extract content from middle lines
-         for line in lines.iter().skip(1).take(lines.len() - 2)
-         {
-            // Remove the comment prefix first
-            let clean_line = if line.trim_start().starts_with(prefix)
-            {
-               &line[line.find(prefix).unwrap() + prefix.len()..]
-            }
-            else
-            {
-               line
-            };
-
-            // Find the content between the pipe characters using char-based approach
-            let chars: Vec<char> = clean_line.chars().collect();
-            let mut start_idx = None;
-            let mut end_idx = None;
-
-            for (i, ch) in chars.iter().enumerate()
-            {
-               if *ch == '│'
-               {
-                  if start_idx.is_none()
-                  {
-                     start_idx = Some(i + 1);
-                  }
-                  else
-                  {
-                     end_idx = Some(i);
-                     break;
-                  }
-               }
-            }
-
-            if let (Some(start), Some(end)) = (start_idx, end_idx)
-            {
-               if end > start
-               {
-                  let content_part: String = chars[start..end].iter().collect();
-                  content_lines.push(content_part.trim().to_string());
-               }
+         // The content sits between the first two pipe characters
+         let mut parts = clean_line.split('│').skip(1);
+         if let (Some(inner), Some(_)) = (parts.next(), parts.next()) {
+            if !inner.is_empty() {
+               content_lines.push(inner.trim().to_string());
             }
          }
-         return content_lines.join(" ");
       }
-      #[allow(clippy::needless_return)]
-      return content.to_string();
+      return content_lines.join(" ");
    }
 }
 
 #[cfg(test)]
-mod tests
-{
+mod tests {
    use super::*;
    use crate::comment_detector::CommentStyle;
 
+   /// # Panics
+   ///
+   /// Panics if an assertion fails.
    #[test]
-   fn test_render_flower_box()
-   {
+   fn test_render_flower_box() {
       let comment_style = CommentStyle::new("//".to_string());
       let renderer = BoxRenderer::new(comment_style, 80);
       let content = "Hello, world!";
@@ -165,9 +112,11 @@ mod tests
       assert!(result.contains("Hello, world!"));
    }
 
+   /// # Panics
+   ///
+   /// Panics if an assertion fails.
    #[test]
-   fn test_extract_content_from_box()
-   {
+   fn test_extract_content_from_box() {
       let comment_style = CommentStyle::new("//".to_string());
       let renderer = BoxRenderer::new(comment_style, 80);
 

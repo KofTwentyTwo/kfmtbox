@@ -11,7 +11,9 @@ too-many-arguments-threshold = 7
 too-many-lines-threshold = 100
 type-complexity-threshold = 200
 large-error-threshold = 128
-stack-size-threshold = 256
+# Bytes (clippy default 512000). 256 cannot be met by ordinary frames: measured debug-build frames are 297-1633 bytes
+# (largest: render_flower_box at 1633, extract_content_from_box at 1551). 2048 keeps a gate just above them.
+stack-size-threshold = 2048
 enum-variant-size-threshold = 200
 array-size-threshold = 512
 max-fn-params-bools = 3

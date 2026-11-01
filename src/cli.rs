@@ -4,8 +4,7 @@ use clap::Parser;
 #[command(name = "kfmtbox")]
 #[command(about = "A command-line utility that wraps text in flower box style comments")]
 #[command(version)]
-pub struct Cli
-{
+pub struct Cli {
    /// Input filename for file type detection
    #[arg(short = 'f', long = "filename")]
    pub filename: Option<String>,
